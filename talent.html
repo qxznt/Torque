@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Careers - Torque Robotics &amp; Solutions</title>
+    <meta name="description" content="Join the Torque Robotics team - careers and talent opportunities">
+    <link rel="icon" href="images/favicon.png">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/animate.css">
+    <link rel="stylesheet" href="css/swiper-bundle.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/theme.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        /* ── Apply Modal: true full-screen, no scroll ── */
+        #apply-modal {
+            display: none;
+            position: fixed !important;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.72);
+            z-index: 9999;
+            overflow: hidden !important;
+        }
+        #apply-modal.open { display: flex !important; align-items: stretch; justify-content: center; }
+        #apply-modal-inner {
+            background: #fff;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+        }
+        #apply-modal-header {
+            padding: 18px 40px 14px;
+            border-bottom: 1px solid #eee;
+            flex-shrink: 0;
+        }
+        #apply-modal-header .modal-label { font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: #EC9121; margin-bottom: 4px; }
+        #modal-job-title { color: #163759; font-size: 20px; font-weight: 800; margin: 0; }
+        #apply-modal-close { position: absolute; top: 14px; right: 20px; background: none; border: none; font-size: 28px; cursor: pointer; color: #999; line-height: 1; transition: color 0.2s; }
+        #apply-modal-close:hover { color: #EC9121; }
+        #apply-modal-body { flex: 1; overflow: hidden; padding: 20px 40px 0; }
+        #apply-form-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px 18px;
+        }
+        .apply-field { display: flex; flex-direction: column; }
+        .apply-field label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #163759; margin-bottom: 4px; }
+        .apply-field input { border: 1px solid #ddd; border-radius: 0; font-size: 13px; padding: 8px 11px; color: #333; height: 38px; outline: none; width: 100%; box-sizing: border-box; transition: border 0.2s; }
+        .apply-field input:focus { border-color: #EC9121; }
+        .apply-field textarea { border: 1px solid #ddd; border-radius: 0; font-size: 13px; padding: 8px 11px; color: #333; height: 60px; outline: none; width: 100%; box-sizing: border-box; resize: none; transition: border 0.2s; }
+        .apply-field textarea:focus { border-color: #EC9121; }
+        .apply-field-half { grid-column: span 2; }
+        .apply-field-full { grid-column: 1 / -1; }
+        .apply-field .file-note { font-size: 10px; color: #999; margin-top: 3px; }
+        #apply-success { display: none; background: #e8f5e9; color: #2e7d32; padding: 9px 14px; font-size: 12px; margin-bottom: 10px; grid-column: 1/-1; }
+        #apply-error { display: none; background: #fdecea; color: #c62828; padding: 9px 14px; font-size: 12px; margin-bottom: 10px; grid-column: 1/-1; }
+        #apply-modal-footer { padding: 14px 40px 18px; flex-shrink: 0; border-top: 1px solid #eee; }
+        #apply-submit-btn { background: #EC9121; color: #000; border: none; padding: 12px 40px; font-size: 14px; font-weight: 700; letter-spacing: 0.5px; cursor: pointer; width: 100%; transition: background 0.2s, color 0.2s; }
+        #apply-submit-btn:hover { background: #163759; color: #fff; }
+
+        @media (max-width: 991px) {
+            #apply-form-grid { grid-template-columns: repeat(2, 1fr); }
+            #apply-modal-header, #apply-modal-body, #apply-modal-footer { padding-left: 20px; padding-right: 20px; }
+        }
+        @media (max-width: 576px) {
+            #apply-form-grid { grid-template-columns: 1fr; }
+            .apply-field-half, .apply-field-full { grid-column: 1 / -1; }
+        }
+
+        /* ── Job tiles ── */
+        .job-description { background: #f9f8f4; border-left: 3px solid #EC9121; }
+        .jd-body { padding: 28px 36px 28px; }
+        .jd-section { margin-bottom: 20px; }
+        .jd-section h6 { font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; color: #163759; font-weight: 700; margin-bottom: 8px; }
+        .jd-section p { font-size: 14px; color: #555; line-height: 1.8; margin: 0; }
+        .jd-section ul { font-size: 14px; color: #555; line-height: 1.8; padding-left: 18px; margin: 0; }
+        .jd-section ul li { margin-bottom: 4px; }
+        .jd-apply-btn { background: #163759; color: #fff; border: none; padding: 12px 30px; font-size: 14px; font-weight: 600; letter-spacing: 0.5px; cursor: pointer; transition: background 0.2s, color 0.2s; }
+        .jd-apply-btn:hover { background: #EC9121; color: #000; }
+        .job-tile { transition: background 0.2s; }
+        .job-tile:hover { background: #f0ede6; }
+        .expand-chevron { width: 22px; height: 22px; border: 2px solid #EC9121; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: #EC9121; transition: transform 0.3s, background 0.2s, color 0.2s; flex-shrink: 0; line-height: 1; }
+        .expand-chevron.open { transform: rotate(90deg); background: #EC9121; color: #fff; }
+        .job-expand-hint { font-size: 11px; color: #EC9121; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; display: flex; align-items: center; gap: 6px; }
+
+        /* ── Core Values – redesigned ── */
+        .cv-section {
+            background: linear-gradient(135deg, #163759 0%, #1e4d7b 100%);
+            margin: 0 0 60px;
+            padding: 64px 0;
+        }
+        .cv-section .ex_title2 { color: #fff; text-align: center; margin-bottom: 8px; }
+        .cv-section .ex_title2 span { color: #EC9121; }
+        .cv-subtitle { text-align: center; color: rgba(255,255,255,0.6); font-size: 15px; margin-bottom: 48px; }
+        .cv-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+        .cv-card { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); padding: 28px 24px; transition: background 0.25s, transform 0.25s; }
+        .cv-card:hover { background: rgba(236,145,33,0.15); transform: translateY(-3px); }
+        .cv-card-icon { font-size: 26px; margin-bottom: 12px; }
+        .cv-card-title { color: #EC9121; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+        .cv-card-text { color: rgba(255,255,255,0.75); font-size: 14px; line-height: 1.7; margin: 0; }
+        @media (max-width: 768px) { .cv-grid { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 480px) { .cv-grid { grid-column: 1fr; } }
+
+        /* ── FAQ ── */
+        .faq-section { padding: 70px 0; background: #fff; }
+        .faq-dept-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 36px; }
+        .faq-tab { background: #f0ede6; border: none; padding: 10px 22px; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; color: #163759; transition: background 0.2s, color 0.2s; }
+        .faq-tab.active, .faq-tab:hover { background: #163759; color: #fff; }
+        .faq-dept-panel { display: none; }
+        .faq-dept-panel.active { display: block; }
+        .faq-item { border-bottom: 1px solid #eee; }
+        .faq-q { display: flex; justify-content: space-between; align-items: center; padding: 18px 0; cursor: pointer; font-size: 15px; font-weight: 600; color: #163759; gap: 12px; transition: color 0.2s; }
+        .faq-q:hover { color: #EC9121; }
+        .faq-icon { font-size: 20px; flex-shrink: 0; color: #EC9121; transition: transform 0.3s; }
+        .faq-icon.open { transform: rotate(45deg); }
+        .faq-a { display: none; padding: 0 0 18px; font-size: 14px; color: #555; line-height: 1.8; }
+        .faq-a.open { display: block; }
+
+        /* ── Responsive: large monitors ── */
+        @media (min-width: 1400px) { .container { max-width: 1320px; } }
+        @media (min-width: 1600px) { .container { max-width: 1480px; } }
+
+        /* ── Global hover transitions ── */
+        .btn, .nav-link, a.map_link, .cb-submit, .navbar-toggler { transition: all 0.2s; }
+        .cb-submit:hover { background: #163759 !important; color: #fff !important; }
+        a.map_link:hover { opacity: 0.75; }
+
+        .form_table .form-control { height: 60px; }
+        .swiper-slide { width: 100% !important; }
+    </style>
+</head>
+<body class="inner-page">
+
+    <header class="page_header">
+        <div class="container">
+            <nav class="navbar navbar-expand-lg navbar-light">
+                <a class="navbar-brand" href="index.html"><img src="images/Torque_Org.png" alt="Torque Robotics" class="brand-logo" loading="lazy"></a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                    <ul class="navbar-nav">
+                        <li class="nav-item"><a class="nav-link" href="about.html">About Us</a></li>
+                        <li class="nav-item"><a class="nav-link" href="services.html">Services</a></li>
+                        <li class="nav-item"><a class="nav-link" href="solutions.html">Solutions</a></li>
+                        <li class="nav-item"><a class="nav-link" href="projects.html">Projects</a></li>
+                        <li class="nav-item"><a class="nav-link active" href="talent.html">Careers</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Culture Blurb -->
+    <section class="start_tal" style="margin-top: 50px;">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="img_box3 wow fadeInUp">
+                        <span>Empowering Employees as Partners, Not Just Associates.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tagline -->
+    <section style="padding: 16px 0 0; margin-top: 10px; margin-bottom: 10px; background: #fff;">
+        <div class="container">
+            <p class="careers-tagline-line">Matching top talent with employers seeking diverse roles, including:</p>
+        </div>
+    </section>
+
+    <!-- ── Job Openings ── -->
+    <section class="job-openings-section">
+        <div class="container">
+            <div class="section-label">Open Positions</div>
+            <h3>Current Job Openings</h3>
+
+            <!-- Job 1: Onsite Robotics -->
+            <div class="job-tile" onclick="toggleJob('job1')" style="cursor:pointer;">
+                <div class="job-tile-left">
+                    <div class="job-title">Sr. Engineer / Engineer – Onsite Robotics</div>
+                    <div class="job-tags">
+                        <span class="job-tag">Full-time</span>
+                        <span class="job-tag">Pune / Gurgaon / Kharkhoda</span>
+                        <span class="job-tag">1–7 yrs exp</span>
+                    </div>
+                </div>
+                <div class="job-tile-right">
+                    <span class="job-expand-hint">
+                        <span id="expand-label-job1">View JD</span>
+                        <span class="expand-chevron" id="arrow-job1">&#8250;</span>
+                    </span>
+                </div>
+            </div>
+            <div class="job-description" id="job1" style="display:none;">
+                <div class="jd-body">
+                    <div class="jd-section"><h6>About the Role</h6><p>As an Onsite Robotics Engineer at Torque Robotics, you will be deployed at automotive OEM and Tier-1 facilities to program, commission, and troubleshoot industrial robots for BIW and non-BIW processes, making real-time decisions that impact quality and throughput on live production lines.</p></div>
+                    <div class="jd-section"><h6>Key Responsibilities</h6><ul>
+                        <li>Program and commission industrial robots (ABB, FANUC, KUKA, Yaskawa, Kawasaki, Nachi) for spot welding, material handling, sealing, arc welding, and roller hemming</li>
+                        <li>Provide installation and commissioning support at customer facilities for start-up, debug, training, and final machine acceptance</li>
+                        <li>Apply knowledge of BIW manufacturing processes and assembly line operations</li>
+                        <li>Collaborate with simulation engineers to implement offline-generated programs</li>
+                        <li>Support PLC programs and controls architecture tasks as needed</li>
+                    </ul></div>
+                    <div class="jd-section"><h6>Requirements</h6><ul>
+                        <li>Bachelor's degree in Mechanical / Mechatronics / EEE / EC or Diploma in Mechatronics</li>
+                        <li>Minimum 2 years of hands-on experience with one or more industrial robot brands</li>
+                        <li>Expertise in robotic applications: spot welding, material handling, sealing &amp; gluing, roller hemming, arc welding</li>
+                        <li>Basic knowledge of robotic simulation software is an added advantage</li>
+                        <li>Good communication skills in English / Hindi; willingness to travel and work at client locations across India</li>
+                    </ul></div>
+                    <div style="margin-top:24px;"><button class="jd-apply-btn" onclick="event.stopPropagation(); openApplyModal('Sr. Engineer / Engineer – Onsite Robotics')">Apply Now →</button></div>
+                </div>
+            </div>
+
+            <!-- Job 2: Simulation Engineer -->
+            <div class="job-tile" onclick="toggleJob('job2')" style="cursor:pointer;">
+                <div class="job-tile-left">
+                    <div class="job-title">Simulation Engineer (Engineer 1 / Engineer 2)</div>
+                    <div class="job-tags">
+                        <span class="job-tag">Full-time</span>
+                        <span class="job-tag">Gurgaon</span>
+                        <span class="job-tag">3–5 yrs exp</span>
+                    </div>
+                </div>
+                <div class="job-tile-right">
+                    <span class="job-expand-hint">
+                        <span id="expand-label-job2">View JD</span>
+                        <span class="expand-chevron" id="arrow-job2">&#8250;</span>
+                    </span>
+                </div>
+            </div>
+            <div class="job-description" id="job2" style="display:none;">
+                <div class="jd-body">
+                    <div class="jd-section"><h6>About the Role</h6><p>The Simulation Engineer is a core technical role at Torque Robotics. You will work in our digital factory practice — building robot cell simulations, generating offline programs (OLP), validating cycle times, and producing sign-off documentation for automotive clients. Key skills: Process Simulate (PS), Robotic Automation, BIW.</p></div>
+                    <div class="jd-section"><h6>Key Responsibilities</h6><ul>
+                        <li>Ensure completion of work within assigned budget, project plan, and man-hours allotted</li>
+                        <li>Lead the project team — define guidelines, allocate tasks, and monitor resources to accomplish all milestones</li>
+                        <li>Monitor and control project progress, resource utilisation, financials, and cash flow</li>
+                        <li>Identify, qualify, quantify, and manage project risks; develop risk mitigation plans</li>
+                        <li>Capture and share lessons learned; ensure formal project close-out as contractually agreed</li>
+                        <li>Build and maintain strong relationships with internal and external stakeholders</li>
+                    </ul></div>
+                    <div class="jd-section"><h6>Requirements</h6><ul>
+                        <li>Diploma / B.E. / M.Tech in Mechatronics / Mechanical / Automotive Engineering</li>
+                        <li>3–5 years of experience in BIW Robotic simulation, especially with Process Simulate (PS) software</li>
+                        <li>Strong analytical and problem-solving skills; understanding of financial/project reporting</li>
+                        <li>Ability to prioritise activities, meet deadlines, and communicate effectively</li>
+                    </ul></div>
+                    <div style="margin-top:24px;"><button class="jd-apply-btn" onclick="event.stopPropagation(); openApplyModal('Simulation Engineer')">Apply Now →</button></div>
+                </div>
+            </div>
+
+            <!-- Job 3: Mechanical Design Engineer -->
+            <div class="job-tile" onclick="toggleJob('job3')" style="cursor:pointer;">
+                <div class="job-tile-left">
+                    <div class="job-title">Engineer – Mechanical Design</div>
+                    <div class="job-tags">
+                        <span class="job-tag">Full-time</span>
+                        <span class="job-tag">Gurgaon</span>
+                        <span class="job-tag">2–4 yrs exp</span>
+                    </div>
+                </div>
+                <div class="job-tile-right">
+                    <span class="job-expand-hint">
+                        <span id="expand-label-job3">View JD</span>
+                        <span class="expand-chevron" id="arrow-job3">&#8250;</span>
+                    </span>
+                </div>
+            </div>
+            <div class="job-description" id="job3" style="display:none;">
+                <div class="jd-body">
+                    <div class="jd-section"><h6>About the Role</h6><p>As a Mechanical Design Engineer, you will own the design of BIW weld fixtures, robotic grippers, and EOAT from concept through 2D release, collaborating with manufacturing, quality, and automation teams and working with external vendors to integrate robotic automated cells and lines.</p></div>
+                    <div class="jd-section"><h6>Key Responsibilities</h6><ul>
+                        <li>Provide technical support including execution strategies; responsible for design verifications and validations per customer expectations</li>
+                        <li>Ensure timely delivery of each work package, project milestone, and tender proposal within budget</li>
+                        <li>Create and maintain technical documentation — BoMs, SoPs, Release Notes, 3D models, 2D drawings</li>
+                        <li>Work closely with external vendors for robotic automated cell and line integration</li>
+                        <li>Own assigned work from concept phase through to final 2D phase</li>
+                    </ul></div>
+                    <div class="jd-section"><h6>Desired Knowledge</h6><ul>
+                        <li>Experience designing Body-In-White weld fixtures (Spot / MIG Welding) and robotic gripper / EOAT</li>
+                        <li>Understanding of OEM standards (Daimler / MSIL / TATA / Mahindra etc.)</li>
+                        <li>3D Design, 2D Detailing, and BOM Generation using CATIA V5 or UG NX</li>
+                        <li>Hands-on experience in ergonomics study, datum strategy, weld gun selection, and weld distribution</li>
+                        <li>Quality-conscious — 100% defect-free designs and drawings</li>
+                    </ul></div>
+                    <div class="jd-section"><h6>Requirements</h6><ul>
+                        <li>Bachelor's degree in Mechanical Engineering or equivalent</li>
+                        <li>2–4 years of system engineering or relevant design experience</li>
+                        <li>Proficiency in CATIA V5 and/or UG NX</li>
+                    </ul></div>
+                    <div style="margin-top:24px;"><button class="jd-apply-btn" onclick="event.stopPropagation(); openApplyModal('Engineer – Mechanical Design')">Apply Now →</button></div>
+                </div>
+            </div>
+
+            <!-- Job 4: Project Manager -->
+            <div class="job-tile" onclick="toggleJob('job4')" style="cursor:pointer;">
+                <div class="job-tile-left">
+                    <div class="job-title">Project Manager – Mechanical Integration</div>
+                    <div class="job-tags">
+                        <span class="job-tag">Full-time</span>
+                        <span class="job-tag">Gurgaon Sector 37</span>
+                        <span class="job-tag">5+ yrs exp</span>
+                    </div>
+                </div>
+                <div class="job-tile-right">
+                    <span class="job-expand-hint">
+                        <span id="expand-label-job4">View JD</span>
+                        <span class="expand-chevron" id="arrow-job4">&#8250;</span>
+                    </span>
+                </div>
+            </div>
+            <div class="job-description" id="job4" style="display:none;">
+                <div class="jd-body">
+                    <div class="jd-section"><h6>About the Role</h6><p>We are seeking an experienced Project Manager – Mechanical Integration to lead planning, execution, and delivery of automation and robotic projects in the automotive and manufacturing sectors. You will oversee development, production of tools, fixtures, and installation and commissioning of automation projects, working closely with cross-functional teams. Reports to Directors.</p></div>
+                    <div class="jd-section"><h6>Key Responsibilities</h6><ul>
+                        <li><strong>Project Leadership:</strong> Lead planning and execution of fixture projects and tooling solutions (in-house and on-site)</li>
+                        <li><strong>Collaboration:</strong> Work with design, quality, and automation teams for clear communication and smooth coordination</li>
+                        <li><strong>Resource Management:</strong> Organise daily tasks, allocate team resources, monitor efficiency and cost-effectiveness</li>
+                        <li><strong>Tooling &amp; Fixture Manufacturing:</strong> Develop vendor pool; coordinate manufacturing quality and delivery timelines</li>
+                        <li><strong>Quality Assurance:</strong> Utilise precision measuring tools and visual inspection; oversee assembly of mechanical components</li>
+                        <li><strong>Mentorship:</strong> Guide team members in technical and project management aspects; foster continuous improvement</li>
+                    </ul></div>
+                    <div class="jd-section"><h6>Requirements</h6><ul>
+                        <li>Bachelor's degree or Diploma in Mechanical Engineering or a related field</li>
+                        <li>5+ years in project management, mechanical integration, and manufacturing in the robotic automation industry</li>
+                        <li>Strong understanding of robotic automation processes, fixtures, and tooling manufacturing</li>
+                        <li>Excellent problem-solving, communication, and leadership skills; ability to manage multiple projects simultaneously</li>
+                    </ul></div>
+                    <div style="margin-top:24px;"><button class="jd-apply-btn" onclick="event.stopPropagation(); openApplyModal('Project Manager – Mechanical Integration')">Apply Now →</button></div>
+                </div>
+            </div>
+
+            <!-- Job 5: Executive Sales -->
+            <div class="job-tile" onclick="toggleJob('job5')" style="cursor:pointer;">
+                <div class="job-tile-left">
+                    <div class="job-title">Executive – Sales</div>
+                    <div class="job-tags">
+                        <span class="job-tag">Full-time</span>
+                        <span class="job-tag">Gurgaon</span>
+                        <span class="job-tag">3–6 yrs exp</span>
+                    </div>
+                </div>
+                <div class="job-tile-right">
+                    <span class="job-expand-hint">
+                        <span id="expand-label-job5">View JD</span>
+                        <span class="expand-chevron" id="arrow-job5">&#8250;</span>
+                    </span>
+                </div>
+            </div>
+            <div class="job-description" id="job5" style="display:none;">
+                <div class="jd-body">
+                    <div class="jd-section"><h6>About the Role</h6><p>As Executive – Sales, you will drive business growth by managing regional sales targets, building client relationships, and delivering compelling technical presentations for our automation and robotics solutions. You will work independently and require strong networking and techno-commercial skills.</p></div>
+                    <div class="jd-section"><h6>Key Responsibilities</h6><ul>
+                        <li>Achieve the allotted AOP / Sales Target assigned for the region</li>
+                        <li>Provide accurate forecasts for the month, quarter, and year; manage and forecast the sales pipeline</li>
+                        <li>Develop and deliver sales presentations explaining key technical aspects of TR Solutions</li>
+                        <li>Establish new and maintain existing relationships with end-users, consultants, and contractors</li>
+                        <li>Research the market for competitive intelligence to anticipate upcoming changes or challenges</li>
+                    </ul></div>
+                    <div class="jd-section"><h6>Requirements</h6><ul>
+                        <li>3–6 years of experience in Sales, preferably in the Robotics or Industrial Automation industry</li>
+                        <li>Very good techno-commercial negotiation skills</li>
+                        <li>Good communication, interpersonal, and organisational skills; strong networking ability</li>
+                        <li>Proactive and self-driven; able to work with minimal guidance</li>
+                    </ul></div>
+                    <div style="margin-top:24px;"><button class="jd-apply-btn" onclick="event.stopPropagation(); openApplyModal('Executive – Sales')">Apply Now →</button></div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ── Job Application Modal – Full Screen, No Scroll ── -->
+    <div id="apply-modal" role="dialog" aria-modal="true">
+        <div id="apply-modal-inner">
+            <button id="apply-modal-close" onclick="closeApplyModal()" aria-label="Close">&times;</button>
+            <div id="apply-modal-header">
+                <div class="modal-label">Apply for Position</div>
+                <h4 id="modal-job-title"></h4>
+            </div>
+            <div id="apply-modal-body">
+                <div id="apply-form-grid">
+                    <div id="apply-success">✓ Application submitted! Our HR team will review and get back to you at hr@torquerobotics.in</div>
+                    <div id="apply-error">Something went wrong. Please email your resume directly to hr@torquerobotics.in</div>
+                    <div class="apply-field">
+                        <label>First Name <span style="color:#EC9121;">*</span></label>
+                        <input type="text" id="app-firstname" placeholder="First Name">
+                    </div>
+                    <div class="apply-field">
+                        <label>Last Name <span style="color:#EC9121;">*</span></label>
+                        <input type="text" id="app-lastname" placeholder="Last Name">
+                    </div>
+                    <div class="apply-field">
+                        <label>Email Address <span style="color:#EC9121;">*</span></label>
+                        <input type="email" id="app-email" placeholder="your@email.com">
+                    </div>
+                    <div class="apply-field">
+                        <label>Phone Number <span style="color:#EC9121;">*</span></label>
+                        <input type="tel" id="app-phone" placeholder="+91 XXXXX XXXXX">
+                    </div>
+                    <div class="apply-field">
+                        <label>Current / Last Employer</label>
+                        <input type="text" id="app-employer" placeholder="Company name">
+                    </div>
+                    <div class="apply-field">
+                        <label>Total Experience <span style="color:#EC9121;">*</span></label>
+                        <input type="text" id="app-experience" placeholder="e.g. 3 years">
+                    </div>
+                    <div class="apply-field">
+                        <label>Fixed CTC (Current)</label>
+                        <input type="text" id="app-fixed-ctc" placeholder="e.g. ₹8 LPA">
+                    </div>
+                    <div class="apply-field">
+                        <label>In-Hand Salary (Current)</label>
+                        <input type="text" id="app-inhand" placeholder="e.g. ₹55,000/month">
+                    </div>
+                    <div class="apply-field">
+                        <label>Expected Fixed CTC</label>
+                        <input type="text" id="app-exp-ctc" placeholder="e.g. ₹12 LPA">
+                    </div>
+                    <div class="apply-field">
+                        <label>Expected In-Hand Salary</label>
+                        <input type="text" id="app-exp-inhand" placeholder="e.g. ₹80,000/month">
+                    </div>
+                    <div class="apply-field">
+                        <label>Current Location</label>
+                        <input type="text" id="app-location" placeholder="City, State">
+                    </div>
+                    <div class="apply-field">
+                        <label>LinkedIn Profile</label>
+                        <input type="url" id="app-linkedin" placeholder="linkedin.com/in/...">
+                    </div>
+                    <div class="apply-field apply-field-half">
+                        <label>Cover Letter <span style="color:#EC9121;">*</span></label>
+                        <textarea id="app-cover" placeholder="Tell us about yourself and why you want to join Torque Robotics..."></textarea>
+                    </div>
+                    <div class="apply-field apply-field-half">
+                        <label>Attach Resume <span style="color:#EC9121;">*</span></label>
+                        <input type="file" id="app-resume" accept=".pdf,.doc,.docx" style="font-size:12px; padding:9px 0; height:38px;">
+                        <span class="file-note">PDF, DOC, or DOCX — max 5MB</span>
+                    </div>
+                </div>
+            </div>
+            <div id="apply-modal-footer">
+                <button id="apply-submit-btn" onclick="submitApplication()">Submit Application</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Core Values ── -->
+    <section class="cv-section wow fadeInUp">
+        <div class="container">
+            <div class="ex_title2">Our <span>Core Values</span></div>
+            <p class="cv-subtitle">The principles that guide every decision we make — from the factory floor to the boardroom.</p>
+            <div class="cv-grid">
+                <div class="cv-card">
+                    <div class="cv-card-icon">⚖️</div>
+                    <div class="cv-card-title">Integrity</div>
+                    <p class="cv-card-text">We always choose what's right over what's convenient. Transparency and honesty are non-negotiable — with clients, with each other, and with ourselves.</p>
+                </div>
+                <div class="cv-card">
+                    <div class="cv-card-icon">🤝</div>
+                    <div class="cv-card-title">Humility &amp; Respect</div>
+                    <p class="cv-card-text">We listen before we lead. Every voice matters, and we believe great ideas can come from every level of the team.</p>
+                </div>
+                <div class="cv-card">
+                    <div class="cv-card-icon">🚀</div>
+                    <div class="cv-card-title">Empowerment &amp; Support</div>
+                    <p class="cv-card-text">We create an environment where individuals thrive — through encouragement, ownership, and the freedom to grow without fear of failure.</p>
+                </div>
+                <div class="cv-card">
+                    <div class="cv-card-icon">🏆</div>
+                    <div class="cv-card-title">Collective Excellence</div>
+                    <p class="cv-card-text">We win as a team. By combining diverse expertise and pulling in the same direction, we deliver outcomes greater than the sum of our parts.</p>
+                </div>
+                <div class="cv-card">
+                    <div class="cv-card-icon">🎯</div>
+                    <div class="cv-card-title">Client First</div>
+                    <p class="cv-card-text">Everything starts with the customer. We go beyond the brief, anticipate needs, and build partnerships on reliability and results.</p>
+                </div>
+                <div class="cv-card">
+                    <div class="cv-card-icon">🔄</div>
+                    <div class="cv-card-title">Continuous Improvement</div>
+                    <p class="cv-card-text">We never settle. Through reflection, iteration, and a relentless pursuit of better, we raise our bar every single day.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Image Slider -->
+    <section class="career-slider-wrap wow fadeInUp" style="margin-bottom: 40px;">
+        <div class="swiper careerSwiper">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide"><img loading="lazy" src="images/uploads/444.jpg" alt="Torque Team at JBM Pune"></div>
+                <div class="swiper-slide"><img loading="lazy" src="images/uploads/111.jpg" alt="Torque Team at JBM J3"></div>
+                <div class="swiper-slide"><img loading="lazy" src="images/uploads/222.png" alt="Torque Team at DICV"></div>
+                <div class="swiper-slide"><img loading="lazy" src="images/uploads/3333.jpg" alt="Torque Team at Caparo"></div>
+                <div class="swiper-slide"><img loading="lazy" src="images/ser.png" alt="Torque Team"></div>
+            </div>
+            <div class="swiper-pagination career-pagination"></div>
+        </div>
+    </section>
+
+    <!-- Closing Statement -->
+    <section style="padding: 70px 0 60px; background: #fff;">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-10 col-lg-8 mx-auto" style="text-align: center;">
+                    <p style="color: #163759; font-size: clamp(16px, 2vw, 20px); font-weight: 600; line-height: 1.85; margin: 0;">
+                        At Torque Robotics, our engineers are our greatest strength. We place strong emphasis on nurturing our people and creating an environment that encourages continuous learning. Over the years, Torque Robotics has earned a reputation in the industry as a great place to learn and grow. As we aim for new heights, we remain committed to growing together with our core team. We have always prioritized our employees—even when it means making exceptions to policy.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── FAQ Section ── -->
+    <section class="faq-section">
+        <div class="container">
+            <div class="section-label">Got Questions?</div>
+            <h3 style="margin-bottom:32px;">Frequently Asked Questions</h3>
+            <div class="faq-dept-tabs">
+                <button class="faq-tab active" onclick="switchFaqDept('general',this)">General</button>
+                <button class="faq-tab" onclick="switchFaqDept('onsite',this)">Onsite Robotics</button>
+                <button class="faq-tab" onclick="switchFaqDept('simulation',this)">Simulation</button>
+                <button class="faq-tab" onclick="switchFaqDept('projects',this)">Projects &amp; Design</button>
+                <button class="faq-tab" onclick="switchFaqDept('sales',this)">Sales</button>
+            </div>
+
+            <!-- General -->
+            <div class="faq-dept-panel active" id="faq-general">
+                <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>How do I apply for a role at Torque Robotics?</span><span class="faq-icon">+</span></div><div class="faq-a">Click the "View JD" button on any open position above to read the full job description, then click "Apply Now" to fill in the application form. You can also email your resume directly to hr@torquerobotics.in with the position title in the subject line.</div></div>
+                <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>What is the typical hiring process at Torque Robotics?</span><span class="faq-icon">+</span></div><div class="faq-a">Our process typically involves: (1) resume screening by HR, (2) a technical interview with the department lead, (3) a practical or case-study round for engineering roles, and (4) a final discussion with management. The full process usually takes 2–3 weeks.</div></div>
+                <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>Does Torque Robotics offer internal growth opportunities?</span><span class="faq-icon">+</span></div><div class="faq-a">Yes. We actively promote from within. Engineers who demonstrate strong performance typically move into senior or lead roles within 2–3 years. We also offer cross-department exposure — for example, onsite engineers often transition into simulation or project management tracks.</div></div>
+                <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>Are freshers eligible to apply at Torque Robotics?</span><span class="faq-icon">+</span></div><div class="faq-a">Yes, for entry-level roles we welcome motivated freshers, especially those with a strong academic background in Mechanical, Mechatronics, or Electrical Engineering. Internship experience and relevant project work are a strong plus.</div></div>
+            </div>
+
+            <!-- Onsite Robotics -->
+            <div class="faq-dept-panel" id="faq-onsite">
+                <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>Which robot brands do I need experience with for an Onsite Robotics role?</span><span class="faq-icon">+</span></div><div class="faq-a">We primarily work with ABB, FANUC, KUKA, Yaskawa, Kawasaki, and Nachi robots. Hands-on experience with at least one of these brands is required. Candidates with multi-brand proficiency are given preference.</div></div>
+                <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>Will I need to travel for the Onsite Robotics position?</span><span class="faq-icon">+</span></div><div class="faq-a">Yes. Onsite Robotics roles are field-based. You will be deployed at customer facilities across India — primarily in Pune, Gurgaon, Kharkhoda, and other automotive hubs. Travel allowances and accommodation support are provided during deployments.</div></div>
+                <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>What automotive applications will I work on as an Onsite Engineer?</span><span class="faq-icon">+</span></div><div class="faq-a">You will work on BIW processes including spot welding, arc welding, material handling, sealing and gluing, and roller hemming. Most of our clients are automotive OEMs and Tier-1 suppliers, so understanding production line flow is important.</div></div>
+                <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>Is PLC knowledge required for Onsite Robotics roles?</span><span class="faq-icon">+</span></div><div class="faq-a">Basic PLC knowledge and an understanding of controls architecture are expected. You don't need to be a PLC programmer, but the ability to read and understand PLC logic for troubleshooting purposes is very valuable on production sites.</div></div>
+            </div>
+
+            <!-- Simulation -->
+            <div class="faq-dept-panel" id="faq-simulation">
+                <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>Which simulation software does Torque Robotics use?</span><span class="faq-icon">+</span></div><div class="faq-a">We primarily use Siemens Process Simulate (Tecnomatix) for BIW robotic simulation. Experience with DELMIA V5, Roboguide, or RobotStudio is also valuable. Process Simulate (PS) proficiency is the most important requirement for our simulation team.</div></div>
+                <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>Do Simulation Engineers also work onsite at client locations?</span><span class="faq-icon">+</span></div><div class="faq-a">Primarily, simulation work is done from our Gurgaon office. However, there are occasions where simulation engineers visit client sites for project kick-offs, design reviews, or to validate digital-to-physical accuracy during commissioning. These visits are typically short-term.</div></div>
+                <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>What does a typical simulation project look like at Torque Robotics?</span><span class="faq-icon">+</span></div><div class="faq-a">A typical project involves receiving CAD data and layout from the client, building the robot cell in Process Simulate, verifying robot reachability and cycle times, generating OLP (Offline Programs), and producing sign-off documentation. Projects range from single-station studies to full multi-robot line simulations.</div></div>
+                <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>Is BIW knowledge mandatory for a Simulation Engineer role?</span><span class="faq-icon">+</span></div><div class="faq-a">A solid understanding of BIW manufacturing processes is expected for Engineer 1 / Engineer 2 positions (3–5 years experience). For junior roles, foundational knowledge of robotic automation is sufficient, with expectation of rapid on-the-job learning.</div></div>
+            </div>
+
+            <!-- Projects & Design -->
+            <div class="faq-dept-panel" id="faq-projects">
+                <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>What CAD software is used by the Mechanical Design team?</span><span class="faq-icon">+</span></div><div class="faq-a">Our design engineers primarily use CATIA V5 and UG NX (Siemens NX) for 3D modelling, 2D detailing, and BOM generation. Proficiency in at least one of these two platforms is mandatory for the Mechanical Design Engineer role.</div></div>
+                <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>What types of fixtures does the design team work on?</span><span class="faq-icon">+</span></div><div class="faq-a">The design team works on BIW weld fixtures (spot and MIG welding), robotic grippers, EOAT (End-of-Arm Tooling), machining fixtures, welding fixtures, and assembly fixtures. Designs follow OEM standards from clients such as Daimler, MSIL, TATA, and Mahindra.</div></div>
+                <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>What does the Project Manager role involve day-to-day?</span><span class="faq-icon">+</span></div><div class="faq-a">Day-to-day activities include coordinating with the design team, managing vendor timelines for part manufacturing, conducting quality checks on sourced components, tracking project milestones, and communicating progress to clients and directors. It is a cross-functional role requiring both technical and managerial skills.</div></div>
+                <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>Is travel required for Projects and Design roles?</span><span class="faq-icon">+</span></div><div class="faq-a">For Mechanical Design Engineers, work is primarily office-based in Gurgaon with occasional vendor visits. For the Project Manager role, travel to supplier facilities and client sites is required as projects move into manufacturing and installation phases.</div></div>
+            </div>
+
+            <!-- Sales -->
+            <div class="faq-dept-panel" id="faq-sales">
+                <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>Do I need a technical background for the Sales role?</span><span class="faq-icon">+</span></div><div class="faq-a">Yes. We look for candidates with a techno-commercial profile — ideally someone with an engineering background who can confidently explain the technical aspects of our robotics and automation solutions to clients. Prior experience in the robotics or industrial automation industry is strongly preferred.</div></div>
+                <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>What types of clients will I work with in the Sales role?</span><span class="faq-icon">+</span></div><div class="faq-a">Our clients are primarily automotive OEMs, Tier-1 and Tier-2 suppliers, and industrial manufacturers. You will engage with end-users, procurement teams, plant engineers, and consultants involved in new project planning.</div></div>
+                <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>Is there a sales target associated with this position?</span><span class="faq-icon">+</span></div><div class="faq-a">Yes, the Executive – Sales role is target-driven. You will be assigned an Annual Operating Plan (AOP) / Sales Target for your region. Monthly and quarterly forecasting is a key part of the role, and performance is reviewed regularly against the pipeline.</div></div>
+                <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>What is the sales territory for the Gurgaon-based Sales role?</span><span class="faq-icon">+</span></div><div class="faq-a">The Gurgaon position primarily covers the North India region, including NCR, Haryana, Rajasthan, and UP. There may also be opportunities to work on pan-India or key account initiatives depending on business needs and individual performance.</div></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Backdrop -->
+    <div id="contact-modal-backdrop"></div>
+
+    <!-- Contact Bubble -->
+    <div id="contact-bubble" role="button" aria-label="Open contact form" tabindex="0">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="width:18px;height:18px;flex-shrink:0;"><path d="M20 2H4a2 2 0 0 0-2 2v18l4-4h14a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z"/></svg>
+        <span class="cb-label">Contact Us</span>
+    </div>
+
+    <!-- Contact Form Panel -->
+    <div id="contact-panel" role="dialog" aria-label="Contact form" aria-modal="true">
+        <button id="contact-close" class="cb-close" aria-label="Close">&times;</button>
+        <h5>Get in Touch</h5>
+        <span class="cb-email">hr@torquerobotics.in</span>
+        <p class="cb-modal-subtitle">Fill in your details and we'll get back to you shortly.</p>
+        <div id="cb-success-msg" style="display:none;background:#e8f5e9;color:#2e7d32;padding:12px 14px;font-size:13px;margin-bottom:14px;border-radius:2px;">&#10003; Message sent! We'll get back to you shortly.</div>
+        <div id="cb-error-msg" style="display:none;background:#fdecea;color:#c62828;padding:12px 14px;font-size:13px;margin-bottom:14px;border-radius:2px;">Something went wrong. Please email us directly at sales@torquerobotics.in</div>
+        <div class="row" style="margin:0 -5px;">
+            <div class="col-md-6" style="padding:0 5px;"><input type="text" id="cb-name" class="form-control" placeholder="Your Name" aria-label="Your Name"></div>
+            <div class="col-md-6" style="padding:0 5px;"><input type="email" id="cb-email-field" class="form-control" placeholder="Email Address" aria-label="Email Address"></div>
+        </div>
+        <div class="row" style="margin:0 -5px;">
+            <div class="col-md-6" style="padding:0 5px;"><input type="text" id="cb-company" class="form-control" placeholder="Company" aria-label="Company"></div>
+            <div class="col-md-6" style="padding:0 5px;"><input type="tel" id="cb-phone" class="form-control" placeholder="Phone Number" aria-label="Phone Number"></div>
+        </div>
+        <textarea id="cb-message" class="form-control" placeholder="Your Message" rows="4" aria-label="Message"></textarea>
+        <button class="cb-submit" type="button" id="cb-send-btn" onclick="sendContactForm()">Send Message &rarr;</button>
+    </div>
+
+    <footer class="footer" role="contentinfo">
+        <div class="container">
+            <div class="row align-items-start">
+                <div class="col-md-3 col-lg-3" style="margin-bottom:24px;">
+                    <div class="footer_logo" style="margin-bottom:20px;">
+                        <img src="images/Torque_Org.png" alt="Torque Robotics" class="footer_logo_img" loading="lazy" style="filter:brightness(0) invert(1);">
+                    </div>
+                    <div class="social_menu">
+                        <ul>
+                            <li><a href="#" aria-label="Facebook"><img src="images/f_icon1.svg" alt="Facebook"></a></li>
+                            <li><a href="#" aria-label="X/Twitter"><img src="images/f_icon2.svg" alt="X"></a></li>
+                            <li><a href="#" aria-label="LinkedIn"><img src="images/f_icon3.svg" alt="LinkedIn"></a></li>
+                            <li><a href="#" aria-label="Instagram"><img src="images/f_icon_instagram.svg" alt="Instagram"></a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-2 col-lg-2" style="margin-bottom:24px;">
+                    <div class="footer_menu">
+                        <ul class="menu">
+                            <li style="color:rgba(255,255,255,0.5); font-size:11px; text-transform:uppercase; letter-spacing:2px; margin-bottom:14px; font-weight:600;">Navigation</li>
+                            <li><a href="about.html">About Us</a></li>
+                            <li><a href="contact.html">Contact</a></li>
+                            <li><a href="projects.html">Projects</a></li>
+                            <li><a href="talent.html">Careers</a></li>
+                            <li><a href="solutions.html">Solutions</a></li>
+                            <li><a href="services.html">Services</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-1 col-lg-1"></div>
+                <div class="col-md-6 col-lg-6" style="margin-bottom:24px;">
+                    <div style="color:rgba(255,255,255,0.5); font-size:11px; text-transform:uppercase; letter-spacing:2px; margin-bottom:14px; font-weight:600;">Locations</div>
+                    <div class="row">
+                        <div class="col-6" style="margin-bottom:16px;">
+                            <div class="location_box">
+                                <div class="location_title">Head Office, Gurgaon</div>
+                                <div class="location_det">#265, Pace City 2, Udyog Vihar Industrial Area Phase VI, Sector 37, Gurugram, Haryana 122004 India</div>
+                                <a href="https://maps.google.com/?q=265+Pace+City+2+Udyog+Vihar+Phase+6+Gurugram" class="map_link" target="_blank" rel="noopener">View on Map</a>
+                            </div>
+                        </div>
+                        <div class="col-6" style="margin-bottom:16px;">
+                            <div class="location_box">
+                                <div class="location_title">Gujarat Office</div>
+                                <div class="location_det">#B-117, Vallabhkunj, Pratapgadh, Becharaji, Mehsana, Gujarat 384210 India</div>
+                                <a href="https://maps.google.com/?q=Vallabhkunj+Pratapgadh+Becharaji+Mehsana+Gujarat" class="map_link" target="_blank" rel="noopener">View on Map</a>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="location_box">
+                                <div class="location_title">Manesar Office</div>
+                                <div class="location_det">#Plot No. 222, Sector 8, IMT Manesar, Gurgaon, Haryana 122052</div>
+                                <a href="https://maps.google.com/?q=IMT+Manesar+Sector+8+Gurgaon" class="map_link" target="_blank" rel="noopener">View on Map</a>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="location_box">
+                                <div class="location_title">Pune Office</div>
+                                <div class="location_det">103, Suratwala Mark Plazzo, Hinjawadi, Pune, Maharashtra - 411057 India</div>
+                                <a href="https://maps.google.com/?q=Suratwala+Mark+Plazzo+Hinjawadi+Pune" class="map_link" target="_blank" rel="noopener">View on Map</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 col-lg-12">
+                    <div class="copy">&copy; torque robotics &amp; solutions 2026</div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/swiper-bundle.min.js"></script>
+    <script src="js/wow.min.js"></script>
+    <script src="js/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script>new WOW().init();</script>
+
+    <script>
+    (function(){ emailjs.init({ publicKey: "YOUR_EMAILJS_PUBLIC_KEY" }); })();
+
+    /* ── Job toggle ── */
+    var allJobs = ['job1','job2','job3','job4','job5'];
+    function toggleJob(id) {
+        var el = document.getElementById(id);
+        var chevron = document.getElementById('arrow-' + id);
+        var label = document.getElementById('expand-label-' + id);
+        var isOpen = el.style.display !== 'none';
+        allJobs.forEach(function(j) {
+            document.getElementById(j).style.display = 'none';
+            var c = document.getElementById('arrow-' + j);
+            var l = document.getElementById('expand-label-' + j);
+            if (c) c.classList.remove('open');
+            if (l) l.textContent = 'View JD';
+        });
+        if (!isOpen) {
+            el.style.display = 'block';
+            if (chevron) chevron.classList.add('open');
+            if (label) label.textContent = 'Hide JD';
+            el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    }
+
+    /* ── Apply Modal ── */
+    var currentJobTitle = '';
+    function openApplyModal(title) {
+        currentJobTitle = title;
+        document.getElementById('modal-job-title').textContent = title;
+        document.getElementById('apply-modal').classList.add('open');
+        document.body.style.overflow = 'hidden';
+        document.getElementById('apply-success').style.display = 'none';
+        document.getElementById('apply-error').style.display = 'none';
+    }
+    function closeApplyModal() {
+        document.getElementById('apply-modal').classList.remove('open');
+        document.body.style.overflow = '';
+    }
+    document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeApplyModal(); });
+
+    /* ── Submit Application ── */
+    function submitApplication() {
+        var firstname  = document.getElementById('app-firstname').value.trim();
+        var lastname   = document.getElementById('app-lastname').value.trim();
+        var email      = document.getElementById('app-email').value.trim();
+        var phone      = document.getElementById('app-phone').value.trim();
+        var employer   = document.getElementById('app-employer').value.trim();
+        var experience = document.getElementById('app-experience').value.trim();
+        var fixedCtc   = document.getElementById('app-fixed-ctc').value.trim();
+        var inhand     = document.getElementById('app-inhand').value.trim();
+        var expCtc     = document.getElementById('app-exp-ctc').value.trim();
+        var expInhand  = document.getElementById('app-exp-inhand').value.trim();
+        var location   = document.getElementById('app-location').value.trim();
+        var linkedin   = document.getElementById('app-linkedin').value.trim();
+        var cover      = document.getElementById('app-cover').value.trim();
+        var resumeFile = document.getElementById('app-resume').files[0];
+        var btn        = document.getElementById('apply-submit-btn');
+
+        if (!firstname || !lastname || !email || !phone || !cover) {
+            alert('Please fill in all required fields (First Name, Last Name, Email, Phone, Cover Letter).');
+            return;
+        }
+        if (!resumeFile) { alert('Please attach your resume before submitting.'); return; }
+        if (resumeFile.size > 5 * 1024 * 1024) { alert('Resume file is too large. Please keep it under 5MB.'); return; }
+
+        btn.disabled = true;
+        btn.textContent = 'Submitting...';
+
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            var base64 = e.target.result.split(',')[1];
+            emailjs.send('torque_service', 'torque_job_tpl', {
+                position: currentJobTitle,
+                firstname: firstname, lastname: lastname,
+                email: email, phone: phone,
+                employer: employer || 'N/A', experience: experience || 'N/A',
+                fixed_ctc: fixedCtc || 'N/A', inhand_salary: inhand || 'N/A',
+                expected_ctc: expCtc || 'N/A', expected_inhand: expInhand || 'N/A',
+                location: location || 'N/A', linkedin: linkedin || 'N/A',
+                cover: cover, resume_name: resumeFile.name, resume_data: base64,
+                to_email: 'hr@torquerobotics.in'
+            }).then(function() {
+                document.getElementById('apply-success').style.display = 'block';
+                btn.textContent = 'Application Submitted!';
+            }, function() {
+                document.getElementById('apply-error').style.display = 'block';
+                btn.disabled = false;
+                btn.textContent = 'Submit Application';
+            });
+        };
+        reader.readAsDataURL(resumeFile);
+    }
+
+    /* ── FAQ accordion ── */
+    function toggleFaq(qEl) {
+        var ansEl = qEl.nextElementSibling;
+        var icon  = qEl.querySelector('.faq-icon');
+        var isOpen = ansEl.classList.contains('open');
+        var panel = qEl.closest('.faq-dept-panel');
+        panel.querySelectorAll('.faq-a').forEach(function(a){ a.classList.remove('open'); });
+        panel.querySelectorAll('.faq-icon').forEach(function(i){ i.classList.remove('open'); });
+        if (!isOpen) {
+            ansEl.classList.add('open');
+            icon.classList.add('open');
+        }
+    }
+
+    /* ── FAQ tabs ── */
+    function switchFaqDept(dept, btn) {
+        document.querySelectorAll('.faq-dept-panel').forEach(function(p){ p.classList.remove('active'); });
+        document.querySelectorAll('.faq-tab').forEach(function(t){ t.classList.remove('active'); });
+        document.getElementById('faq-' + dept).classList.add('active');
+        btn.classList.add('active');
+    }
+
+    /* ── Contact form ── */
+    function sendContactForm() {
+        var name    = document.getElementById('cb-name').value.trim();
+        var email   = document.getElementById('cb-email-field').value.trim();
+        var company = document.getElementById('cb-company').value.trim();
+        var phone   = document.getElementById('cb-phone').value.trim();
+        var message = document.getElementById('cb-message').value.trim();
+        var btn     = document.getElementById('cb-send-btn');
+        var successEl = document.getElementById('cb-success-msg');
+        var errorEl   = document.getElementById('cb-error-msg');
+        if (!name || !email || !message) { alert('Please fill in your name, email, and message.'); return; }
+        btn.disabled = true; btn.textContent = 'Sending...';
+        successEl.style.display = 'none'; errorEl.style.display = 'none';
+        emailjs.send('torque_service', 'torque_contact_tpl', {
+            from_name: name, from_email: email,
+            company: company || 'N/A', phone: phone || 'N/A',
+            message: message, to_email: 'sales@torquerobotics.in'
+        }).then(function() {
+            successEl.style.display = 'block';
+            btn.textContent = 'Send Message →'; btn.disabled = false;
+            ['cb-name','cb-email-field','cb-company','cb-phone','cb-message'].forEach(function(id){
+                var el = document.getElementById(id); if (el) el.value = '';
+            });
+        }, function() {
+            errorEl.style.display = 'block';
+            btn.textContent = 'Send Message →'; btn.disabled = false;
+        });
+    }
+    </script>
+</body>
+</html>
